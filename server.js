@@ -3,12 +3,17 @@ require("dotenv").config(); // ALLOWS ENVIRONMENT VARIABLES TO BE SET ON PROCESS
 const express = require("express");
 const app = express();
 const postRoutes = require("./routes/postRoutes.js");
+const path = require('path');
+const { fork } = require('child_process');
+const { error } = require("console");
+const db = require("./config/db");
 
 // Middleware
-app.use(express.json()); // parse json bodies in the request object
+app.use(express.json({limit: '50mb'})); // parse json bodies in the request object
 
 // Redirect requests to endpoint starting with /posts to postRoutes.js
-app.use("/posts", postRoutes);
+//app.use("/posts", postRoutes);
+app.use("/", postRoutes);
 
 // Global Error Handler. IMPORTANT function params MUST start with err
 app.use((err, req, res, next) => {
@@ -24,3 +29,10 @@ app.use((err, req, res, next) => {
 // Listen on pc port
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
+
+
+//const child = fork('./battlesGetData.js');
+
+
+
+

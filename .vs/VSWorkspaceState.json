@@ -6,6 +6,6 @@
     "\\models",
     "\\routes"
   ],
-  "SelectedNode": "\\routes\\postRoutes.js",
+  "SelectedNode": "\\controllers\\postControllers.js",
   "PreviewInSolutionExplorer": false
 }

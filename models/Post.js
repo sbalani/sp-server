@@ -103,35 +103,4 @@ class PostBattle {
 
 
 
-/*class Post {
-	constructor(title, body) {
-		this.title = title;
-		this.body = body;
 
-	}
-	async save() {
-		let d = new Date();
-		let yyyy = d.getFullYear();
-		let mm = d.getMonth() + 1;
-		let dd = d.getDate();
-
-		let sql = `
-		INSERT INTO posts(
-			title, body, created at)
-		VALUES(
-			'${this.title}'
-			'${this.body}'
-		)
-		`;
-
-		const [newPost, _] = await db.execute(sql);
-
-		return newPost;
-	}
-
-	module.exports = Post;
-	}
-
-}
-
-*/

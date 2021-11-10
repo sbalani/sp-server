@@ -1,6 +1,5 @@
-const Post = require('../models/Post')
-
-const db = require("../config/db");
+const Post = require('../models/Post');
+const db = require('../config/db');
 const mysql = require("mysql2");
 require("dotenv").config();
 
@@ -21,7 +20,6 @@ class PostBattle {
 		this.monster_1_id = monster_1_id;
 		this.monster_1_level = monster_1_level;
 		this.monster_1_abilities = JSON.stringify(monster_1_abilities);
-		console.log(monster_1_abilities);
 		this.monster_2_id = monster_2_id;
 		this.monster_2_level = monster_2_level;
 		this.monster_2_abilities = JSON.stringify(monster_2_abilities);
@@ -50,7 +48,7 @@ class PostBattle {
 	}
 	async save() {
 		let sql = `
-		INSERT INTO history (summoner_id, summoner_level,
+		REPLACE INTO history (summoner_id, summoner_level,
 		monster_1_id, monster_1_level, monster_1_abilities,
 		monster_2_id, monster_2_level, monster_2_abilities,
 		monster_3_id, monster_3_level, monster_3_abilities,
@@ -113,43 +111,71 @@ class PostBattle {
 
 
 
-
-exports.getAllPosts = async (req, res, next) => {
-    res.send("receiving");
+exports.getBattles = async (req, res, next) => {
+   
     console.log("request received");
+	var param = req.query;
+	console.log(param.summoners);
+	//res.json(param
+	let summoners = param.summoners;
+	let summToString = summoners.toString();
+	summToString = summToString.substring(1, summToString.length - 1);
 
+	console.log("IN(" + summToString + ")");
+
+	let sql = "SELECT summoner_id, monster_1_id, monster_2_id, monster_3_id, monster_4_id, monster_5_id, monster_6_id, ruleset, mana_cap, COUNT(*) AS tot, COUNT(*) / (SELECT COUNT(*) FROM battledata.history) AS Ratio FROM battledata.history WHERE summoner_id IN ("+ summToString +") AND ruleset = ? AND mana_cap = ?  GROUP BY summoner_id, monster_1_id, monster_2_id, monster_3_id, monster_4_id, monster_5_id, monster_6_id ORDER BY Ratio, tot DESC";
+	
+	db.pool.query(sql, [param.ruleset, param.mana], function (err, result) {
+		if (err) throw err;
+		console.log(result);
+		res.json(result);
+	});
+
+
+	
+
+	/* db.pool.execute(sql, function (err, result) {
+
+		if (err) throw err;
+
+		console.log(result);
+		res.json(result);
+	})
+	*/
 }
 
 exports.createNewPost = async (req, res, next) => {
-    let {summoner_id, summoner_level,
-        monster_1_id, monster_1_level, monster_1_abilities,
-        monster_2_id, monster_2_level, monster_2_abilities,
-        monster_3_id, monster_3_level, monster_3_abilities,
-        monster_4_id, monster_4_level, monster_4_abilities,
-        monster_5_id, monster_5_level, monster_5_abilities,
-        monster_6_id, monster_6_level, monster_6_abilities,
-        created_date, match_type, mana_cap, ruleset, inactive,
-        battle_queue_id, player_rating_initial, player_rating_final, winner
-	} = req.body; // using postman this is what allows us to post JSON
 
+	
 
-    let post = new PostBattle(summoner_id, summoner_level,
-        monster_1_id, monster_1_level, monster_1_abilities,
-        monster_2_id, monster_2_level, monster_2_abilities,
-        monster_3_id, monster_3_level, monster_3_abilities,
-        monster_4_id, monster_4_level, monster_4_abilities,
-        monster_5_id, monster_5_level, monster_5_abilities,
-        monster_6_id, monster_6_level, monster_6_abilities,
-        created_date, match_type, mana_cap, ruleset, inactive,
-        battle_queue_id, player_rating_initial, player_rating_final, winner); // the title & body defined in the previous line taken from the JSON are now deposited here.
+	let json = req.body;
+	console.log(json);
+	for (var obj in json) {
+		console.log(obj + ": " + json[obj]);
 
-    post = await post.save();
+		let post = new PostBattle(json[obj].summoner_id, json[obj].summoner_level,
+			json[obj].monster_1_id, json[obj].monster_1_level, json[obj].monster_1_abilities,
+			json[obj].monster_2_id, json[obj].monster_2_level, json[obj].monster_2_abilities,
+			json[obj].monster_3_id, json[obj].monster_3_level, json[obj].monster_3_abilities,
+			json[obj].monster_4_id, json[obj].monster_4_level, json[obj].monster_4_abilities,
+			json[obj].monster_5_id, json[obj].monster_5_level, json[obj].monster_5_abilities,
+			json[obj].monster_6_id, json[obj].monster_6_level, json[obj].monster_6_abilities,
+			json[obj].created_date, json[obj].match_type, json[obj].mana_cap, json[obj].ruleset, json[obj].inactive,
+			json[obj].battle_queue_id, json[obj].player_rating_initial, json[obj].player_rating_final, json[obj].winner);
+		console.log(post);
 
-    console.log("a post is happening");
-    console.log(post);
+		//let post = new PostBattle(json);
+
+		post = await post.save();
+
+		console.log("a post is happening");
+	}
+	console.log("out of loop");
+	
 
 }
 
-exports.getPostById = (req, res, next) => {
+exports.getAllPosts = (req, res, next) => {
+	res.send("hello!");
 
 }

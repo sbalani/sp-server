@@ -9,7 +9,7 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
 });
 
-let sql = "SELECT * FROM battledata.history;";
+let sql = "SELECT * FROM battledata.history WHERE battle_queue_id = 'c9d3b611e40d2411a35d44009359b37e0cf2fb06';";
 
 pool.execute(sql, function (err, result) {
 
