@@ -31,7 +31,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
 
 
-//const child = fork('./battlesGetData.js');
+const child = fork('./battlesGetData.js');
 
 
 

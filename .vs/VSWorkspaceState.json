@@ -1,7 +1,6 @@
 {
   "ExpandedNodes": [
     "",
-    "\\config",
     "\\controllers",
     "\\models",
     "\\routes"
