@@ -123,15 +123,15 @@ exports.getBattles = async (req, res, next) => {
     console.log("request received");
 	var param = req.query;
 	console.log(param.summoners);
-	//res.json(param
 	let summoners = param.summoners;
 	let summToString = summoners.toString();
 	summToString = summToString.substring(1, summToString.length - 1);
 
 	console.log("IN(" + summToString + ")");
 
-	let sql = "SELECT summoner_id, monster_1_id, monster_2_id, monster_3_id, monster_4_id, monster_5_id, monster_6_id, ruleset, mana_cap, COUNT(*) AS tot, COUNT(*) / (SELECT COUNT(*) FROM battledata.history) AS Ratio FROM battledata.history WHERE summoner_id IN ("+ summToString +") AND ruleset = ? AND mana_cap = ?  GROUP BY summoner_id, monster_1_id, monster_2_id, monster_3_id, monster_4_id, monster_5_id, monster_6_id ORDER BY Ratio, tot DESC";
-	
+	//let sql = "SELECT summoner_id, monster_1_id, monster_2_id, monster_3_id, monster_4_id, monster_5_id, monster_6_id, ruleset, mana_cap, COUNT(*) AS tot, COUNT(*) / (SELECT COUNT(*) FROM battledata.history) AS Ratio FROM battledata.history WHERE summoner_id IN ("+ summToString +") AND ruleset = ? AND mana_cap = ?  GROUP BY summoner_id, monster_1_id, monster_2_id, monster_3_id, monster_4_id, monster_5_id, monster_6_id ORDER BY Ratio, tot DESC";
+	let sql = "SELECT summoner_id, monster_1_id, monster_2_id, monster_3_id, monster_4_id, monster_5_id, monster_6_id, mana_cap, ruleset, SUM(winlose='win') AS wintot, SUM(winlose='lose') AS losetot, COUNT(*) AS totalmatches, SUM(winlose='win') / COUNT(*)  AS Ratio, SUM(winlose='lose') / COUNT(*)  AS lossRatio FROM history WHERE summoner_id IN (" + summToString +") AND ruleset = ? AND mana_cap = ? GROUP BY summoner_id, monster_1_id, monster_2_id, monster_3_id, monster_4_id, monster_5_id, monster_6_id HAVING wintot > 2 ORDER BY Ratio DESC"
+
 	db.pool.query(sql, [param.ruleset, param.mana], function (err, result) {
 		if (err) throw err;
 		console.log(result);

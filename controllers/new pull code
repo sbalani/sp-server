@@ -1,0 +1,24 @@
+let battles = [];
+
+async function getBattleHistory(players = []) {
+    const battleHistory = await fetch('https://api2.splinterlands.com/battle/history?player=' + players[0])  // pull first player
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response;
+        })
+        .then((battleHistory) => {
+            let temp = battleHistory.json();
+            return temp.battles;
+        })
+        .catch((error) => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+    console.log("initial pull" + JSON.stringify(battleHistory));
+    battles.concat(battleHistory);
+    players.shift();  // remove first player
+
+    // run getBattleHistory again in 10 seconds passing array without the player you just pulled
+    if (players.length > 0) setTimeout(getBattleHistory, 10000, players);
+}
