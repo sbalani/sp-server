@@ -21,7 +21,7 @@ const pool = mysql.createPool({
 
 
 
-let sql = "SELECT * FROM battledata.history WHERE battle_queue_id = 'c9d3b611e40d2411a35d44009359b37e0cf2fb06';";
+let sql = "SELECT * FROM a8r1ltvklmu2edni.history WHERE battle_queue_id = 'c9d3b611e40d2411a35d44009359b37e0cf2fb06';";
 
 pool.execute(sql, function (err, result) {
 
