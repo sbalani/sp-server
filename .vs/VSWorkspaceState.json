@@ -5,6 +5,6 @@
     "\\models",
     "\\routes"
   ],
-  "SelectedNode": "\\server.js",
+  "SelectedNode": "\\controllers\\postControllers.js",
   "PreviewInSolutionExplorer": false
 }
